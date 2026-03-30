@@ -1,0 +1,123 @@
+class Node:
+    def __init__(self, digit):
+        self.digit = digit
+        self.next = None
+
+
+class BigInteger:
+    def __init__(self):
+        self.head = None
+
+    # CREATE
+    def create(self, number):
+        for digit in number:
+            self.insert(int(digit))
+
+    # INSERT
+    def insert(self, digit):
+        new_node = Node(digit)
+        if not self.head:
+            self.head = new_node
+        else:
+            temp = self.head
+            while temp.next:
+                temp = temp.next
+            temp.next = new_node
+
+    # DISPLAY
+    def display(self):
+        temp = self.head
+        while temp:
+            print(temp.digit, end="")
+            temp = temp.next
+        print()
+
+    # ISEMPTY
+    def is_empty(self):
+        return self.head is None
+
+    # UBAH KE STRING
+    def to_string(self):
+        temp = self.head
+        result = ""
+        while temp:
+            result += str(temp.digit)
+            temp = temp.next
+        return result
+
+    # COMPARE
+    def compare(self, other):
+        if self.to_string() > other.to_string():
+            return ">"
+        elif self.to_string() < other.to_string():
+            return "<"
+        else:
+            return "="
+
+
+# PENJUMLAHAN
+def add(a, b):
+    result = BigInteger()
+    carry = 0
+
+    s1 = a.to_string()[::-1]
+    s2 = b.to_string()[::-1]
+
+    for i in range(max(len(s1), len(s2))):
+        d1 = int(s1[i]) if i < len(s1) else 0
+        d2 = int(s2[i]) if i < len(s2) else 0
+
+        total = d1 + d2 + carry
+        carry = total // 10
+        result.insert(total % 10)
+
+    if carry:
+        result.insert(carry)
+
+    return result
+
+
+# PENGURANGAN
+def subtract(a, b):
+    result = BigInteger()
+    borrow = 0
+
+    s1 = a.to_string()[::-1]
+    s2 = b.to_string()[::-1]
+
+    for i in range(len(s1)):
+        d1 = int(s1[i]) - borrow
+        d2 = int(s2[i]) if i < len(s2) else 0
+
+        if d1 < d2:
+            d1 += 10
+            borrow = 1
+        else:
+            borrow = 0
+
+        result.insert(d1 - d2)
+
+    return result
+
+
+# MAIN
+if __name__ == "__main__":
+    a = BigInteger()
+    a.create("123")
+
+    b = BigInteger()
+    b.create("45")
+
+    print("A =", end=" ")
+    a.display()
+
+    print("B =", end=" ")
+    b.display()
+
+    print("A + B =", end=" ")
+    add(a, b).display()
+
+    print("A - B =", end=" ")
+    subtract(a, b).display()
+
+    print("Perbandingan:", a.compare(b))
